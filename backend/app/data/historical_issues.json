@@ -1,0 +1,56 @@
+[
+  {
+    "issue_id": "ISS-101",
+    "occurred_at": "2025-11-03",
+    "station": "FCT-2",
+    "symptom": "Intermittent USB-C continuity fail on CC1/CC2 lines, ~2.5% of units in batch B-2025-44.",
+    "root_cause": "Reflow oven zone 3 temperature profile had drifted 8C below spec, producing marginal solder joints on connector J4 pins 5-6.",
+    "resolution": "Recalibrated reflow oven zone 3 thermocouple, re-ran profile qualification, reworked affected WIP.",
+    "tags": ["usb-c", "connector", "reflow", "solder-joint", "FCT-2"]
+  },
+  {
+    "issue_id": "ISS-088",
+    "occurred_at": "2025-08-19",
+    "station": "FCT-2",
+    "symptom": "USB-C port fails continuity test only after thermal cycling, not at first pass.",
+    "root_cause": "Connector supplier changed adhesive backing material (rev C to rev D) which shrank more under thermal stress, straining the pin solder joints.",
+    "resolution": "Reverted to rev C adhesive pending supplier corrective action; added incoming inspection check.",
+    "tags": ["usb-c", "connector", "supplier-change", "bom-revision"]
+  },
+  {
+    "issue_id": "ISS-071",
+    "occurred_at": "2025-05-02",
+    "station": "ICT-1",
+    "symptom": "Power rail 3V3 out of tolerance on ~1% of units.",
+    "root_cause": "Firmware default calibration constant for the buck regulator was left at the bring-up default instead of the production value.",
+    "resolution": "Corrected firmware config default, added config-value assertion to ICT-1 test sequence.",
+    "tags": ["firmware", "power-rail", "config", "ICT-1"]
+  },
+  {
+    "issue_id": "ISS-059",
+    "occurred_at": "2025-02-14",
+    "station": "FCT-1",
+    "symptom": "RF calibration failures clustered on units built on second shift.",
+    "root_cause": "Second-shift operators were using an uncalibrated reference antenna after the scheduled cal due date lapsed.",
+    "resolution": "Enforced cal due-date interlock in station software; retrained shift on cal cart procedure.",
+    "tags": ["rf", "calibration", "operator", "FCT-1"]
+  },
+  {
+    "issue_id": "ISS-034",
+    "occurred_at": "2024-11-20",
+    "station": "FCT-2",
+    "symptom": "Sporadic USB-C data line (D+/D-) fail, not correlated with any single component lot.",
+    "root_cause": "Test fixture pogo pin wear on the FCT-2 nest caused increased contact resistance after ~40k insertions.",
+    "resolution": "Replaced pogo pin block, added preventive-maintenance interval at 30k insertions.",
+    "tags": ["usb-c", "fixture", "pogo-pin", "FCT-2"]
+  },
+  {
+    "issue_id": "ISS-022",
+    "occurred_at": "2024-09-11",
+    "station": "ICT-1",
+    "symptom": "Boundary-scan open detected on BGA U12 for a small population of boards.",
+    "root_cause": "Insufficient stencil aperture on U12 footprint caused solder-paste volume shortfall on corner balls.",
+    "resolution": "Increased stencil aperture 10%, added AOI check at U12 post-reflow.",
+    "tags": ["bga", "solder-paste", "stencil", "ICT-1"]
+  }
+]

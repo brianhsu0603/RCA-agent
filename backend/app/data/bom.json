@@ -1,0 +1,44 @@
+[
+  {
+    "part_number": "CONN-USBC-2201",
+    "description": "USB-C receptacle, 24-pin, mid-mount, SMT",
+    "revision": "D",
+    "supplier": "Kestrel Connector Co.",
+    "notes": "Rev D introduced 2025-07: adhesive backing material changed from acrylic (rev C) to silicone-hybrid per supplier ECN 2025-0714. No DFMEA update filed at the time."
+  },
+  {
+    "part_number": "CONN-USBC-2201",
+    "description": "USB-C receptacle, 24-pin, mid-mount, SMT",
+    "revision": "C",
+    "supplier": "Kestrel Connector Co.",
+    "notes": "Prior revision, acrylic adhesive backing. Superseded by rev D 2025-07."
+  },
+  {
+    "part_number": "REG-BUCK-3V3-08",
+    "description": "Synchronous buck regulator, 3.3V output, U8",
+    "revision": "B",
+    "supplier": "Voltrex Semi",
+    "notes": ""
+  },
+  {
+    "part_number": "MCU-APEX-M4",
+    "description": "Main application MCU, U5",
+    "revision": "A",
+    "supplier": "Apex Silicon",
+    "notes": ""
+  },
+  {
+    "part_number": "RF-FEM-9210",
+    "description": "RF front-end module",
+    "revision": "A",
+    "supplier": "Wavecore RF",
+    "notes": ""
+  },
+  {
+    "part_number": "BGA-U12-LOGIC",
+    "description": "Digital logic BGA, U12, 0.5mm pitch",
+    "revision": "A",
+    "supplier": "Apex Silicon",
+    "notes": ""
+  }
+]

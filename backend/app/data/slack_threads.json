@@ -1,0 +1,37 @@
+[
+  {
+    "channel": "#line3-fct2",
+    "thread_ts": "1751800000.000100",
+    "author": "priya.k (Process Eng)",
+    "text": "Seeing a small uptick in USB-C continuity fails on FCT-2 today, all lot B-2026-19. CC1 line specifically, resistance right around the 1.5 ohm limit. Anyone touch the reflow profile recently?",
+    "ts": "1751800000.000100"
+  },
+  {
+    "channel": "#line3-fct2",
+    "thread_ts": "1751800000.000100",
+    "author": "marcus.t (NPI)",
+    "text": "No reflow changes logged this week. But heads up - procurement swapped the J4 connector to rev D a few weeks back (supplier ECN for the adhesive backing). Same supplier issue we saw on ISS-088 last year.",
+    "ts": "1751800300.000200"
+  },
+  {
+    "channel": "#line3-fct2",
+    "thread_ts": "1751800000.000100",
+    "author": "priya.k (Process Eng)",
+    "text": "Good catch, I forgot about ISS-088. Pulling incoming inspection data for the rev D lot now.",
+    "ts": "1751800500.000300"
+  },
+  {
+    "channel": "#test-eng",
+    "thread_ts": "1751700000.000100",
+    "author": "dan.w (Test Eng)",
+    "text": "FCT-2 fixture is coming up on 38k insertions on the current pogo block, PM interval is 30k. Scheduling swap for this weekend just in case it's contributing to marginal contact readings.",
+    "ts": "1751700000.000100"
+  },
+  {
+    "channel": "#rf-cal",
+    "thread_ts": "1751600000.000100",
+    "author": "lena.p (Cal Lab)",
+    "text": "FCT-1 second shift flagged RF fails again - reference CAL-REF-07 due date lapsed 6/30, interlock should've blocked it but someone may have overridden. Escalating.",
+    "ts": "1751600000.000100"
+  }
+]

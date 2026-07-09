@@ -1,0 +1,12 @@
+[
+  {"connector": "J4", "pin": "A5", "signal": "CC1", "from_ref": "J4-A5", "to_ref": "U3.CC1_SNS"},
+  {"connector": "J4", "pin": "B5", "signal": "CC2", "from_ref": "J4-B5", "to_ref": "U3.CC2_SNS"},
+  {"connector": "J4", "pin": "A6", "signal": "DP1", "from_ref": "J4-A6", "to_ref": "U5.USB_DP"},
+  {"connector": "J4", "pin": "A7", "signal": "DN1", "from_ref": "J4-A7", "to_ref": "U5.USB_DN"},
+  {"connector": "J4", "pin": "B8", "signal": "VBUS", "from_ref": "J4-B8", "to_ref": "PWR_5V0_BUS"},
+  {"connector": "J4", "pin": "A1", "signal": "GND", "from_ref": "J4-A1", "to_ref": "GND_PLANE"},
+  {"connector": "J7", "pin": "1", "signal": "3V3_SNS", "from_ref": "U8.VOUT_SNS", "to_ref": "TP12"},
+  {"connector": "J7", "pin": "2", "signal": "3V3_EN", "from_ref": "MCU.GPIO14", "to_ref": "U8.EN"},
+  {"connector": "J9", "pin": "1", "signal": "RF_ANT1", "from_ref": "RF_MOD.ANT1", "to_ref": "J9-1"},
+  {"connector": "J9", "pin": "2", "signal": "RF_ANT2", "from_ref": "RF_MOD.ANT2", "to_ref": "J9-2"}
+]

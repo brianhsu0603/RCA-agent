@@ -1,0 +1,23 @@
+[
+  {
+    "name": "usb_c_continuity_fail",
+    "symptom": "Intermittent USB-C continuity fail on CC1 line, batch B-2026-19, station FCT-2.",
+    "station": "FCT-2",
+    "test_id": "FCT2-88213",
+    "expected_keywords": ["connector", "adhesive", "rev d", "supplier", "reflow", "solder"]
+  },
+  {
+    "name": "power_rail_fail",
+    "symptom": "3V3 power rail slightly out of tolerance on a handful of units at ICT-1.",
+    "station": "ICT-1",
+    "test_id": "ICT1-55010",
+    "expected_keywords": ["firmware", "calibration", "config"]
+  },
+  {
+    "name": "rf_cal_fail",
+    "symptom": "RF calibration test failing on units built during second shift at FCT-1.",
+    "station": "FCT-1",
+    "test_id": "FCT1-31090",
+    "expected_keywords": ["calibration", "reference", "cal"]
+  }
+]

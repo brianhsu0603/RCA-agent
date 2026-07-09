@@ -1,0 +1,68 @@
+[
+  {
+    "code": "FM-01",
+    "component": "J4 USB-C receptacle",
+    "failure_mode": "Connector pin solder joint open/high-resistance",
+    "effect": "Intermittent continuity or data-line failure at final functional test or in the field",
+    "cause": "Reflow profile drift, adhesive shrinkage under thermal stress, or insufficient paste volume",
+    "severity": 8,
+    "occurrence": 3,
+    "detection": 5,
+    "rpn": 120
+  },
+  {
+    "code": "FM-02",
+    "component": "J4 USB-C receptacle",
+    "failure_mode": "Mechanical shell misalignment",
+    "effect": "Connector fails insertion-force spec, may crack solder joints during mating",
+    "cause": "SMT placement offset beyond tolerance",
+    "severity": 6,
+    "occurrence": 2,
+    "detection": 6,
+    "rpn": 72
+  },
+  {
+    "component": "Buck regulator U8 (3V3 rail)",
+    "code": "FM-03",
+    "failure_mode": "Output voltage out of tolerance",
+    "effect": "Downstream logic brown-out or ICT power-rail test failure",
+    "cause": "Firmware calibration constant misconfigured, or feedback resistor tolerance stack-up",
+    "severity": 7,
+    "occurrence": 2,
+    "detection": 4,
+    "rpn": 56
+  },
+  {
+    "code": "FM-04",
+    "component": "FCT-2 test fixture pogo pin nest",
+    "failure_mode": "Contact resistance increase",
+    "effect": "False-fail continuity readings not attributable to the unit under test",
+    "cause": "Pogo pin wear beyond preventive-maintenance interval",
+    "severity": 5,
+    "occurrence": 4,
+    "detection": 3,
+    "rpn": 60
+  },
+  {
+    "code": "FM-05",
+    "component": "RF front-end module",
+    "failure_mode": "Calibration out of spec",
+    "effect": "RF test failure at FCT-1",
+    "cause": "Reference equipment calibration lapse or antenna cable degradation",
+    "severity": 6,
+    "occurrence": 2,
+    "detection": 3,
+    "rpn": 36
+  },
+  {
+    "code": "FM-06",
+    "component": "BGA U12",
+    "failure_mode": "Corner-ball open (head-in-pillow)",
+    "effect": "Boundary-scan open, intermittent digital failures",
+    "cause": "Stencil aperture undersized relative to pad, or oxidation on ball surface",
+    "severity": 8,
+    "occurrence": 2,
+    "detection": 4,
+    "rpn": 64
+  }
+]

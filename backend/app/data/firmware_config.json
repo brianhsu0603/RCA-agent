@@ -1,0 +1,37 @@
+[
+  {
+    "code": "CFG-01",
+    "station": "FCT-2",
+    "config_key": "usb_c.continuity_test.resistance_limit_ohm",
+    "value": "1.5",
+    "version": "fct2-fw-3.8.2"
+  },
+  {
+    "code": "CFG-02",
+    "station": "FCT-2",
+    "config_key": "usb_c.continuity_test.retries",
+    "value": "1",
+    "version": "fct2-fw-3.8.2"
+  },
+  {
+    "code": "CFG-03",
+    "station": "ICT-1",
+    "config_key": "power.buck_3v3.calibration_constant",
+    "value": "1.00 (production)",
+    "version": "ict1-fw-2.1.0"
+  },
+  {
+    "code": "CFG-04",
+    "station": "FCT-1",
+    "config_key": "rf.reference_cal.due_date_interlock",
+    "value": "enabled",
+    "version": "fct1-fw-1.9.4"
+  },
+  {
+    "code": "CFG-05",
+    "station": "FCT-2",
+    "config_key": "usb_c.continuity_test.dwell_ms",
+    "value": "50",
+    "version": "fct2-fw-3.8.2"
+  }
+]

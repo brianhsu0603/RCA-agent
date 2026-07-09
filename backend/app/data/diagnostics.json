@@ -1,0 +1,42 @@
+[
+  {
+    "test_id": "FCT2-88213",
+    "station": "FCT-2",
+    "timestamp": "2026-07-06T14:22:10Z",
+    "measurements": {"cc1_resistance_ohm": 2.1, "cc2_resistance_ohm": 0.4, "vbus_v": 4.98, "dp_dn_continuity": "pass"},
+    "pass_fail": "fail",
+    "notes": "CC1 resistance exceeds 1.5 ohm limit (CFG-01); failed on first attempt, passed on manual retest."
+  },
+  {
+    "test_id": "FCT2-88214",
+    "station": "FCT-2",
+    "timestamp": "2026-07-06T14:24:03Z",
+    "measurements": {"cc1_resistance_ohm": 0.3, "cc2_resistance_ohm": 0.3, "vbus_v": 5.01, "dp_dn_continuity": "pass"},
+    "pass_fail": "pass",
+    "notes": ""
+  },
+  {
+    "test_id": "FCT2-88220",
+    "station": "FCT-2",
+    "timestamp": "2026-07-06T15:05:47Z",
+    "measurements": {"cc1_resistance_ohm": 1.9, "cc2_resistance_ohm": 0.5, "vbus_v": 4.97, "dp_dn_continuity": "pass"},
+    "pass_fail": "fail",
+    "notes": "Same J4 CC1 marginal-resistance signature as FCT2-88213, same build lot B-2026-19."
+  },
+  {
+    "test_id": "ICT1-55010",
+    "station": "ICT-1",
+    "timestamp": "2026-07-05T09:11:00Z",
+    "measurements": {"rail_3v3_v": 3.31, "rail_5v0_v": 5.00},
+    "pass_fail": "pass",
+    "notes": ""
+  },
+  {
+    "test_id": "FCT1-31090",
+    "station": "FCT-1",
+    "timestamp": "2026-07-04T18:40:22Z",
+    "measurements": {"rf_output_dbm": -1.2, "cal_reference_id": "CAL-REF-07", "cal_due_date": "2026-06-30"},
+    "pass_fail": "fail",
+    "notes": "Reference cal CAL-REF-07 due date has lapsed by 4 days."
+  }
+]
