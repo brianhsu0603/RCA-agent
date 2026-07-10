@@ -2,7 +2,6 @@ from datetime import datetime
 
 from pydantic import BaseModel, Field
 
-
 # --- Requests ---------------------------------------------------------------
 
 
@@ -95,8 +94,12 @@ class RcaRunOut(BaseModel):
 
 class TriageResult(BaseModel):
     severity: str = Field(description="one of: low, medium, high, critical")
-    category: str = Field(description="short failure category, e.g. 'connector/mechanical', 'firmware/config', 'test-station'")
-    routing_team: str = Field(description="team this should be routed to, e.g. 'Process Engineering', 'NPI', 'Test Engineering'")
+    category: str = Field(
+        description="short failure category, e.g. 'connector/mechanical', 'firmware/config', 'test-station'"
+    )
+    routing_team: str = Field(
+        description="team this should be routed to, e.g. 'Process Engineering', 'NPI', 'Test Engineering'"
+    )
     confidence: float = Field(ge=0, le=1)
     rationale: str
 

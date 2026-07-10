@@ -30,7 +30,11 @@ app.include_router(rca.router)
 
 @app.on_event("startup")
 def check_config() -> None:
-    logger.info("RCA & Triage Agent starting up (triage_model=%s, rca_model=%s)", settings.triage_model, settings.rca_model)
+    logger.info(
+        "RCA & Triage Agent starting up (triage_model=%s, rca_model=%s)",
+        settings.triage_model,
+        settings.rca_model,
+    )
     if not settings.anthropic_api_key:
         logger.critical(
             "ANTHROPIC_API_KEY is not set - every triage/RCA run will fail. Set it in .env and restart."
