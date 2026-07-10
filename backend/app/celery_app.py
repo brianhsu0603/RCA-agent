@@ -1,6 +1,11 @@
 from celery import Celery
 
 from app.config import settings
+from app.logging_config import setup_logging
+from app.sentry_init import init_sentry
+
+setup_logging()
+init_sentry()
 
 celery_app = Celery(
     "rca_agent",

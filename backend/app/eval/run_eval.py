@@ -15,6 +15,7 @@ from pathlib import Path
 from app.agents.rca_agent import run_rca
 from app.db import SessionLocal
 from app.ingestion.seed import seed
+from app.logging_config import setup_logging
 
 EVAL_SET_PATH = Path(__file__).resolve().parent / "eval_set.json"
 
@@ -26,6 +27,7 @@ def scenario_hit(hypotheses, expected_keywords: list[str], top_n: int = 3) -> bo
 
 
 def main() -> None:
+    setup_logging()
     seed()
     scenarios = json.loads(EVAL_SET_PATH.read_text())
 

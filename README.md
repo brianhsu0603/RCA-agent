@@ -55,6 +55,29 @@ investigation with cited evidence.
 docker compose run --rm backend python -m app.eval.run_eval
 ```
 
+### Logging
+
+Both the API process and the Celery worker log through the standard `logging`
+module (`app/logging_config.py`), controlled by `LOG_LEVEL` in `.env` (`DEBUG`,
+`INFO`, `WARNING`, `ERROR`, `CRITICAL`). Notable log points: request-level INFO
+in `app/api/*`, per-tool-call and per-iteration INFO in the agent loop
+(`app/agents/claude_client.py`), run lifecycle INFO/ERROR in `app/tasks.py`, and
+a CRITICAL at startup if `ANTHROPIC_API_KEY` is unset. `docker compose logs -f
+backend worker` shows the full trace of a triage/RCA run, including every tool
+the agent called and why it finished (or didn't).
+
+### Error tracking (Sentry)
+
+Set `SENTRY_DSN` in `.env` to turn on Sentry for both the API process and the
+Celery worker (`backend/app/sentry_init.py`); leave it blank (default) and
+nothing is sent anywhere. It's wired through the `logging` integration, so
+every `logger.error(...)` / `logger.exception(...)` / `logger.critical(...)`
+call already in the codebase - e.g. a failed triage/RCA run, an unknown tool
+call, an agent that never converges - shows up as a Sentry event with no extra
+instrumentation needed. `SENTRY_ENVIRONMENT` and `SENTRY_TRACES_SAMPLE_RATE`
+control the reported environment tag and performance-trace sampling rate.
+(Frontend error tracking isn't wired up - ask if you want `@sentry/react` added too.)
+
 ## Notes / what's stubbed for a real deployment
 
 - Data source ingestion (historical issues, FMEA, wirelist, BOM, firmware

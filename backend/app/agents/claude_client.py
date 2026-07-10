@@ -7,11 +7,14 @@ returned as-is for the caller to validate against a Pydantic schema.
 """
 
 import json
+import logging
 from typing import Any, Callable
 
 import anthropic
 
 from app.config import settings
+
+logger = logging.getLogger(__name__)
 
 _client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
 
@@ -34,7 +37,8 @@ def run_agent_loop(
 ) -> dict:
     messages: list[dict] = [{"role": "user", "content": user_message}]
 
-    for _ in range(max_iterations):
+    for iteration in range(1, max_iterations + 1):
+        logger.info("agent loop iteration=%d/%d model=%s", iteration, max_iterations, model)
         response = _client.messages.create(
             model=model,
             max_tokens=4096,
@@ -49,6 +53,7 @@ def run_agent_loop(
         if not tool_use_blocks:
             # Model responded with text only and didn't call the terminal tool -
             # nudge it to finish rather than silently returning nothing useful.
+            logger.info("model returned no tool calls on iteration=%d, nudging to finish", iteration)
             messages.append(
                 {
                     "role": "user",
@@ -63,13 +68,16 @@ def run_agent_loop(
             if block.name == terminal_tool_name:
                 terminal_input = block.input
                 continue
+            logger.info("tool call: %s(%s)", block.name, block.input)
             executor = tool_executors.get(block.name)
             if executor is None:
+                logger.error("model requested unknown tool: %s", block.name)
                 result = {"error": f"unknown tool {block.name}"}
             else:
                 try:
                     result = executor(**block.input)
                 except Exception as e:  # noqa: BLE001 - surface to the model, don't crash the run
+                    logger.error("tool %s(%s) raised: %s", block.name, block.input, e)
                     result = {"error": str(e)}
             tool_results.append(
                 {
@@ -80,10 +88,12 @@ def run_agent_loop(
             )
 
         if terminal_input is not None:
+            logger.info("agent called terminal tool %s after %d iteration(s)", terminal_tool_name, iteration)
             return terminal_input
 
         messages.append({"role": "user", "content": tool_results})
 
+    logger.error("agent did not call %s within %d iterations", terminal_tool_name, max_iterations)
     raise AgentDidNotFinishError(
         f"Agent did not call {terminal_tool_name} within {max_iterations} iterations"
     )

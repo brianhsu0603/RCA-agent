@@ -6,6 +6,7 @@ Each table is only populated if empty, so this is safe to run on every container
 """
 
 import json
+import logging
 from pathlib import Path
 
 from sqlalchemy import text
@@ -20,6 +21,8 @@ from app.models import (
     SlackMessage,
     WirelistEntry,
 )
+
+logger = logging.getLogger(__name__)
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 
@@ -36,38 +39,38 @@ def _load(name: str) -> list[dict]:
 
 
 def seed() -> None:
+    logger.info("acquiring seed advisory lock")
     with engine.connect() as conn:
         conn.execute(text("SELECT pg_advisory_lock(:key)"), {"key": _SEED_LOCK_KEY})
         try:
             Base.metadata.create_all(bind=engine)
             _seed_rows()
+        except Exception:
+            logger.exception("seeding failed")
+            raise
         finally:
             conn.execute(text("SELECT pg_advisory_unlock(:key)"), {"key": _SEED_LOCK_KEY})
+    logger.info("seed complete")
 
 
 def _seed_rows() -> None:
     db = SessionLocal()
     try:
-        if db.query(HistoricalIssue).count() == 0:
-            db.add_all(HistoricalIssue(**row) for row in _load("historical_issues.json"))
-
-        if db.query(FmeaEntry).count() == 0:
-            db.add_all(FmeaEntry(**row) for row in _load("fmea.json"))
-
-        if db.query(WirelistEntry).count() == 0:
-            db.add_all(WirelistEntry(**row) for row in _load("wirelist.json"))
-
-        if db.query(BomEntry).count() == 0:
-            db.add_all(BomEntry(**row) for row in _load("bom.json"))
-
-        if db.query(FirmwareConfig).count() == 0:
-            db.add_all(FirmwareConfig(**row) for row in _load("firmware_config.json"))
-
-        if db.query(Diagnostic).count() == 0:
-            db.add_all(Diagnostic(**row) for row in _load("diagnostics.json"))
-
-        if db.query(SlackMessage).count() == 0:
-            db.add_all(SlackMessage(**row) for row in _load("slack_threads.json"))
+        for model, filename in (
+            (HistoricalIssue, "historical_issues.json"),
+            (FmeaEntry, "fmea.json"),
+            (WirelistEntry, "wirelist.json"),
+            (BomEntry, "bom.json"),
+            (FirmwareConfig, "firmware_config.json"),
+            (Diagnostic, "diagnostics.json"),
+            (SlackMessage, "slack_threads.json"),
+        ):
+            if db.query(model).count() == 0:
+                rows = _load(filename)
+                db.add_all(model(**row) for row in rows)
+                logger.info("seeded %d rows into %s", len(rows), model.__tablename__)
+            else:
+                logger.info("%s already populated, skipping", model.__tablename__)
 
         db.commit()
     finally:
@@ -75,5 +78,7 @@ def _seed_rows() -> None:
 
 
 if __name__ == "__main__":
+    from app.logging_config import setup_logging
+
+    setup_logging()
     seed()
-    print("Seed complete.")

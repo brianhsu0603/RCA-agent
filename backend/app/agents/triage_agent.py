@@ -1,3 +1,4 @@
+import logging
 from functools import partial
 
 from sqlalchemy.orm import Session
@@ -9,8 +10,11 @@ from app.agents.tool_specs import TRIAGE_TOOLS
 from app.config import settings
 from app.schemas import TriageResult
 
+logger = logging.getLogger(__name__)
+
 
 def run_triage(db: Session, symptom: str, station: str, test_id: str) -> TriageResult:
+    logger.info("running triage agent station=%s test_id=%s", station, test_id or "unknown")
     user_message = (
         f"Station: {station}\n"
         f"Test ID: {test_id or 'unknown'}\n"
@@ -33,4 +37,11 @@ def run_triage(db: Session, symptom: str, station: str, test_id: str) -> TriageR
         max_iterations=settings.max_agent_iterations,
     )
 
-    return TriageResult.model_validate(result)
+    validated = TriageResult.model_validate(result)
+    logger.info(
+        "triage agent finished station=%s severity=%s confidence=%.2f",
+        station,
+        validated.severity,
+        validated.confidence,
+    )
+    return validated
