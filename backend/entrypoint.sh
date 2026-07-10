@@ -14,7 +14,10 @@ python -m app.ingestion.seed
 
 case "$1" in
   api)
-    exec uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    if [ "$UVICORN_RELOAD" = "1" ]; then
+      exec uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    fi
+    exec uvicorn app.main:app --host 0.0.0.0 --port 8000
     ;;
   worker)
     exec celery -A app.celery_app worker --loglevel=info

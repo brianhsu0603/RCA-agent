@@ -1,0 +1,26 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - namespace.yaml
+  - cluster-secret-store.yaml
+  - external-secret.yaml
+  - backend-deployment.yaml
+  - backend-service.yaml
+  - worker-deployment.yaml
+  - frontend-deployment.yaml
+  - frontend-service.yaml
+  - ingress.yaml
+  - hpa-backend.yaml
+
+# Point these at your ECR repos (see `terraform output`) and set a real tag -
+# `newTag: latest` is a placeholder for first apply only. CI (see
+# .github/workflows/deploy.yml) overwrites these with the git SHA on every
+# push via `kustomize edit set image`.
+images:
+  - name: rca-agent-backend
+    newName: <ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/rca-agent-backend
+    newTag: latest
+  - name: rca-agent-frontend
+    newName: <ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/rca-agent-frontend
+    newTag: latest

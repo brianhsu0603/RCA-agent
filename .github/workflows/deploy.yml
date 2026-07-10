@@ -1,0 +1,61 @@
+name: Build and deploy
+
+on:
+  push:
+    branches: [main]
+
+env:
+  AWS_REGION: us-east-1
+  CLUSTER_NAME: rca-agent
+
+permissions:
+  id-token: write # required for OIDC federation to AWS
+  contents: read
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # One-time manual setup required before this works: create a GitHub OIDC
+      # identity provider + IAM role in the AWS account (see DEPLOYMENT.md),
+      # then set its ARN as the AWS_DEPLOY_ROLE_ARN repo secret.
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - uses: aws-actions/amazon-ecr-login@v2
+        id: ecr-login
+
+      - name: Build and push backend image
+        env:
+          REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+        run: |
+          docker build -t "$REGISTRY/rca-agent-backend:${{ github.sha }}" ./backend
+          docker push "$REGISTRY/rca-agent-backend:${{ github.sha }}"
+
+      - name: Build and push frontend image
+        env:
+          REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+        run: |
+          docker build -f ./frontend/Dockerfile.prod -t "$REGISTRY/rca-agent-frontend:${{ github.sha }}" ./frontend
+          docker push "$REGISTRY/rca-agent-frontend:${{ github.sha }}"
+
+      - name: Update kubeconfig
+        run: aws eks update-kubeconfig --name "$CLUSTER_NAME" --region "$AWS_REGION"
+
+      - name: Deploy
+        env:
+          REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+        run: |
+          cd k8s
+          curl -sfL https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.4.3/kustomize_v5.4.3_linux_amd64.tar.gz | tar xz
+          ./kustomize edit set image \
+            rca-agent-backend="$REGISTRY/rca-agent-backend:${{ github.sha }}" \
+            rca-agent-frontend="$REGISTRY/rca-agent-frontend:${{ github.sha }}"
+          kubectl apply -k .
+          kubectl -n rca-agent rollout status deployment/backend
+          kubectl -n rca-agent rollout status deployment/worker
+          kubectl -n rca-agent rollout status deployment/frontend
