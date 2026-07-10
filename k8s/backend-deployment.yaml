@@ -19,6 +19,15 @@ spec:
           args: ["api"]
           ports:
             - containerPort: 8000
+          env:
+            - name: DD_AGENT_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: DD_SERVICE
+              value: rca-agent-backend
+            - name: DD_ENV
+              value: production
           envFrom:
             - secretRef:
                 name: backend-env

@@ -10,3 +10,4 @@ redis==5.0.8
 python-dotenv==1.0.1
 slack_sdk==3.33.1
 sentry-sdk==2.64.0
+ddtrace==4.10.8

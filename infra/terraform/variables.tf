@@ -65,6 +65,13 @@ variable "slack_bot_token" {
   sensitive   = true
 }
 
+variable "dd_api_key" {
+  description = "Optional Datadog API key for the Datadog Agent DaemonSet (k8s/datadog-agent-daemonset.yaml). Leave blank to leave the Agent unconfigured."
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
 variable "triage_model" {
   type    = string
   default = "claude-haiku-4-5-20251001"

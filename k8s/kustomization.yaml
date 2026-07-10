@@ -5,6 +5,7 @@ resources:
   - namespace.yaml
   - cluster-secret-store.yaml
   - external-secret.yaml
+  - datadog-agent-daemonset.yaml
   - backend-deployment.yaml
   - backend-service.yaml
   - worker-deployment.yaml

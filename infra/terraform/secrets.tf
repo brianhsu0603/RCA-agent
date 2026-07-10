@@ -12,5 +12,6 @@ resource "aws_secretsmanager_secret_version" "backend_env" {
     SLACK_BOT_TOKEN   = var.slack_bot_token
     TRIAGE_MODEL      = var.triage_model
     RCA_MODEL         = var.rca_model
+    DD_API_KEY        = var.dd_api_key
   })
 }

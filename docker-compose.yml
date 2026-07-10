@@ -34,6 +34,8 @@ services:
       DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg2://rca:rca@db:5432/rca}
       REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
       UVICORN_RELOAD: "1"
+      DD_AGENT_HOST: datadog-agent
+      DD_SERVICE: rca-agent-backend
     ports:
       - "${HOST_BACKEND_PORT:-8010}:8000"
     depends_on:
@@ -52,6 +54,8 @@ services:
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg2://rca:rca@db:5432/rca}
       REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      DD_AGENT_HOST: datadog-agent
+      DD_SERVICE: rca-agent-worker
     depends_on:
       db:
         condition: service_healthy
@@ -59,6 +63,21 @@ services:
         condition: service_healthy
     volumes:
       - ./backend/app:/app/app
+
+  datadog-agent:
+    image: gcr.io/datadoghq/agent:7
+    profiles: ["datadog"] # opt-in: `docker compose --profile datadog up`
+    environment:
+      DD_API_KEY: ${DD_API_KEY:-}
+      DD_SITE: ${DD_SITE:-datadoghq.com}
+      DD_APM_ENABLED: "true"
+      DD_APM_NON_LOCAL_TRAFFIC: "true"
+      DD_LOGS_ENABLED: "false"
+      DD_PROCESS_AGENT_ENABLED: "false"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /proc/:/host/proc/:ro
+      - /sys/fs/cgroup/:/host/sys/fs/cgroup:ro
 
   frontend:
     build: ./frontend

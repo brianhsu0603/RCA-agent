@@ -1,0 +1,114 @@
+# Datadog Agent, one pod per node, for backend/worker APM traces (see
+# backend/app/sentry_init.py's sibling, entrypoint.sh's `ddtrace-run` wrapper).
+# DD_API_KEY comes from the same `backend-env` Secret every other component
+# uses (see infra/terraform/secrets.tf + k8s/external-secret.yaml) - it's
+# blank until `terraform apply -var="dd_api_key=..."` is run, in which case
+# this Agent just idles without authenticating (safe no-op).
+#
+# Log collection, process/network monitoring, and the Cluster Agent are not
+# enabled here - this is APM-tracing-only. Assumes containerd on standard EKS
+# node AMIs; adjust the CRI socket path/volume below for Bottlerocket nodes.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: datadog-agent
+  namespace: rca-agent
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: datadog-agent
+rules:
+  - apiGroups: [""]
+    resources: ["services", "events", "endpoints", "pods", "nodes", "componentstatuses"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["nodes/metrics", "nodes/spec", "nodes/proxy", "nodes/stats"]
+    verbs: ["get"]
+  - nonResourceURLs: ["/metrics", "/healthz", "/version"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: datadog-agent
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: datadog-agent
+subjects:
+  - kind: ServiceAccount
+    name: datadog-agent
+    namespace: rca-agent
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: datadog-agent
+  namespace: rca-agent
+spec:
+  selector:
+    matchLabels:
+      app: datadog-agent
+  template:
+    metadata:
+      labels:
+        app: datadog-agent
+    spec:
+      serviceAccountName: datadog-agent
+      containers:
+        - name: datadog-agent
+          image: gcr.io/datadoghq/agent:7
+          ports:
+            - name: traceport
+              containerPort: 8126
+              hostPort: 8126
+              protocol: TCP
+          env:
+            - name: DD_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: backend-env
+                  key: DD_API_KEY
+            - name: DD_SITE
+              value: "datadoghq.com"
+            - name: DD_APM_ENABLED
+              value: "true"
+            - name: DD_APM_NON_LOCAL_TRAFFIC
+              value: "true"
+            - name: DD_LOGS_ENABLED
+              value: "false"
+            - name: DD_PROCESS_AGENT_ENABLED
+              value: "false"
+            - name: DD_CRI_SOCKET_PATH
+              value: "/var/run/containerd/containerd.sock"
+            - name: KUBERNETES
+              value: "true"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 250m
+              memory: 512Mi
+          volumeMounts:
+            - name: cri-socket
+              mountPath: /var/run/containerd/containerd.sock
+              readOnly: true
+            - name: procdir
+              mountPath: /host/proc
+              readOnly: true
+            - name: cgroups
+              mountPath: /host/sys/fs/cgroup
+              readOnly: true
+      volumes:
+        - name: cri-socket
+          hostPath:
+            path: /run/containerd/containerd.sock
+            type: Socket
+        - name: procdir
+          hostPath:
+            path: /proc
+        - name: cgroups
+          hostPath:
+            path: /sys/fs/cgroup

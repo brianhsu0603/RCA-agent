@@ -24,6 +24,10 @@ terraform init
 terraform apply -var="anthropic_api_key=sk-ant-..." -var="aws_region=us-east-1"
 ```
 
+Add `-var="dd_api_key=..."` if you want the Datadog Agent DaemonSet
+(`k8s/datadog-agent-daemonset.yaml`) to actually authenticate - it's deployed
+either way, but sits idle without a key.
+
 Review the plan before confirming - this takes ~15-20 minutes (EKS control
 plane + node group + RDS are the slow parts). Note the outputs when done:
 
@@ -105,6 +109,13 @@ kubectl -n rca-agent get ingress rca-agent   # ADDRESS column = ALB hostname, ma
 
 Once the ALB is provisioned, open its hostname in a browser - you should see
 the triage queue UI, and API calls should succeed via nginx's `/api` proxy.
+
+`kubectl apply -k k8s/` also deploys a Datadog Agent DaemonSet (one pod per
+node) for APM traces from `backend`/`worker`, reading `DD_API_KEY` from the
+same `backend-env` Secret (see step 1's `dd_api_key` var). It's APM-only -
+no log collection, process monitoring, or Cluster Agent. If you want those,
+swap `k8s/datadog-agent-daemonset.yaml` for the official `datadog/agent` Helm
+chart instead.
 
 ## 6. (Optional) Wire up CI/CD
 

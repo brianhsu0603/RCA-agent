@@ -17,6 +17,15 @@ spec:
         - name: worker
           image: rca-agent-backend:latest # replaced by kustomization.yaml `images:` / CI - same image as backend, different command
           args: ["worker"]
+          env:
+            - name: DD_AGENT_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: DD_SERVICE
+              value: rca-agent-worker
+            - name: DD_ENV
+              value: production
           envFrom:
             - secretRef:
                 name: backend-env
