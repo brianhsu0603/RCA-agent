@@ -97,6 +97,7 @@ export default function TriageQueue() {
               <th>Category</th>
               <th>Routing</th>
               <th>Confidence</th>
+              <th>RCA Status</th>
               <th></th>
             </tr>
           </thead>
@@ -113,7 +114,21 @@ export default function TriageQueue() {
                 <td>{run.routing_team}</td>
                 <td>{run.status === "complete" ? `${Math.round(run.confidence * 100)}%` : "—"}</td>
                 <td>
-                  {run.status === "complete" && (
+                  {run.status === "complete" ? (
+                    <span className={`status-badge ${run.rca_status ?? "pending"}`}>
+                      {run.rca_status ?? "pending"}
+                    </span>
+                  ) : (
+                    "—"
+                  )}
+                </td>
+                <td>
+                  {run.status === "complete" && run.rca_run_id && (
+                    <button onClick={() => navigate(`/rca/${run.rca_run_id}`)}>
+                      View Result
+                    </button>
+                  )}
+                  {run.status === "complete" && !run.rca_run_id && (
                     <button
                       onClick={() => handleRunRca(run)}
                       disabled={rcaLaunching === run.run_id}
@@ -127,7 +142,7 @@ export default function TriageQueue() {
             ))}
             {runs.length === 0 && (
               <tr>
-                <td colSpan={8} className="empty-row">
+                <td colSpan={9} className="empty-row">
                   No triage runs yet.
                 </td>
               </tr>

@@ -1,0 +1,32 @@
+# Secrets / credentials - never read into context
+.env
+*.env
+!.env.example
+infra/terraform/*.tfvars
+infra/terraform/*.tfvars.json
+infra/terraform/*.tfstate
+infra/terraform/*.tfstate.*
+
+# Terraform local/provider state - large, binary, or plan artifacts
+infra/terraform/.terraform/
+infra/terraform/.terraform.lock.hcl
+*.tfplan
+tfplan
+
+# Dependencies / build output
+node_modules/
+frontend/dist/
+frontend/tsconfig.tsbuildinfo
+backend/.venv/
+.venv/
+
+# Caches
+__pycache__/
+*.pyc
+.ruff_cache/
+.pytest_cache/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/

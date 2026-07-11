@@ -65,6 +65,10 @@ spec:
               hostPort: 8126
               protocol: TCP
           env:
+            - name: DD_HOSTNAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
             - name: DD_API_KEY
               valueFrom:
                 secretKeyRef:

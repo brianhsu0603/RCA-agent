@@ -17,6 +17,8 @@ export interface TriageRun {
   error: string;
   created_at: string;
   updated_at: string;
+  rca_run_id: string | null;
+  rca_status: string | null;
 }
 
 export interface EvidenceRef {

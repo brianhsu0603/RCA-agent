@@ -31,11 +31,23 @@ def _parse_json_list(raw: str) -> list:
     items: list = []
     idx = 0
     while idx < len(raw):
-        while idx < len(raw) and raw[idx] in " \t\n\r,":
+        while idx < len(raw) and raw[idx] in " \t\n\r,]":
             idx += 1
         if idx >= len(raw):
             break
-        obj, end = decoder.raw_decode(raw, idx)
+        try:
+            obj, end = decoder.raw_decode(raw, idx)
+        except json.JSONDecodeError:
+            # Trailing content isn't a parseable JSON value (truncated output,
+            # a stray bracket, etc). Salvage what we've parsed so far rather
+            # than letting one bad tail fail the whole RCA run.
+            logger.warning(
+                "could not parse trailing content in malformed hypotheses JSON at index %d - "
+                "keeping %d item(s) parsed so far",
+                idx,
+                len(items),
+            )
+            break
         items.append(obj)
         idx = end
     return items

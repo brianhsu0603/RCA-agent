@@ -30,6 +30,10 @@ output "external_secrets_role_arn" {
   value = module.eso_irsa.iam_role_arn
 }
 
+output "github_actions_deploy_role_arn" {
+  value = aws_iam_role.github_actions_deploy.arn
+}
+
 output "rds_endpoint" {
   value = aws_db_instance.this.address
 }

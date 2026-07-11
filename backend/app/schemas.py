@@ -45,6 +45,8 @@ class TriageRunOut(BaseModel):
     error: str
     created_at: datetime
     updated_at: datetime
+    rca_run_id: str | None = None
+    rca_status: str | None = None
 
     class Config:
         from_attributes = True

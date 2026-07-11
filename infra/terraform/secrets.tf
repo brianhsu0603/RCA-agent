@@ -13,5 +13,6 @@ resource "aws_secretsmanager_secret_version" "backend_env" {
     TRIAGE_MODEL      = var.triage_model
     RCA_MODEL         = var.rca_model
     DD_API_KEY        = var.dd_api_key
+    SENTRY_DSN        = var.sentry_dsn
   })
 }

@@ -14,6 +14,10 @@ terraform {
       source  = "hashicorp/random"
       version = ">= 3.5, < 4.0"
     }
+    tls = {
+      source  = "hashicorp/tls"
+      version = ">= 4.0, < 5.0"
+    }
   }
 
   # Remote state is strongly recommended once more than one person touches this.

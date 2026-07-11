@@ -72,6 +72,19 @@ variable "dd_api_key" {
   sensitive   = true
 }
 
+variable "sentry_dsn" {
+  description = "Optional Sentry DSN for backend/worker error tracking. Leave blank to leave Sentry disabled."
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
+variable "github_repo" {
+  description = "GitHub \"owner/repo\" allowed to assume the CI deploy role via OIDC"
+  type        = string
+  default     = "brianhsu0603/RCA-agent"
+}
+
 variable "triage_model" {
   type    = string
   default = "claude-haiku-4-5-20251001"

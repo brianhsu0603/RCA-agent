@@ -1,15 +1,48 @@
-import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { api, RcaRun } from "../api/client";
 import HypothesisCard from "../components/HypothesisCard";
 
 export default function RCADetail() {
   const { runId } = useParams<{ runId: string }>();
   const [run, setRun] = useState<RcaRun | null>(null);
+  const [rerunning, setRerunning] = useState(false);
+  const navigate = useNavigate();
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   async function refresh() {
     if (!runId) return;
     setRun(await api.getRca(runId));
+  }
+
+  async function handleRerun() {
+    if (!run) return;
+    setRerunning(true);
+    try {
+      const accepted = await api.createRca({
+        symptom: run.symptom,
+        station: run.station,
+        test_id: run.test_id,
+        triage_run_id: run.triage_run_id,
+      });
+      // Guard against navigating back to this run's page if the user has
+      // already left it while this request was in flight (e.g. clicked
+      // "Re-run RCA" then immediately clicked back to the triage queue).
+      if (isMountedRef.current) {
+        navigate(`/rca/${accepted.run_id}`);
+      }
+    } finally {
+      if (isMountedRef.current) {
+        setRerunning(false);
+      }
+    }
   }
 
   useEffect(() => {
@@ -47,6 +80,11 @@ export default function RCADetail() {
         {run.status === "failed" && <p className="error-text">{run.error}</p>}
         {(run.status === "pending" || run.status === "running") && (
           <p className="pending-text">Agent is investigating - gathering evidence across data sources...</p>
+        )}
+        {(run.status === "complete" || run.status === "failed") && (
+          <button onClick={handleRerun} disabled={rerunning}>
+            {rerunning ? "Starting new run..." : "Re-run RCA"}
+          </button>
         )}
       </section>
 
