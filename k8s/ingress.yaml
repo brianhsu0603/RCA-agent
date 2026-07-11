@@ -13,6 +13,11 @@ metadata:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
+    # Uses an externally-managed SG (created + whitelisted via the AWS
+    # Console) instead of letting the controller auto-create/manage one, so
+    # the allowed IP is configured in AWS, not committed to git. Update the
+    # inbound rule on this SG directly in the console if your IP changes.
+    alb.ingress.kubernetes.io/security-groups: sg-008efdd414e1c62a9
 spec:
   ingressClassName: alb
   rules:
