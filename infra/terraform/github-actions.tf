@@ -80,9 +80,11 @@ resource "aws_iam_role_policy" "github_actions_deploy" {
   policy = data.aws_iam_policy_document.github_actions_deploy.json
 }
 
-# Grants cluster-wide admin over k8s resources (deployments, services,
-# ingress, the Namespace object, the ClusterSecretStore CRD) without letting
-# this role manage other principals' EKS access.
+# Full cluster-admin: the CI job's `kubectl apply -k` touches genuinely
+# cluster-scoped objects (ClusterRole/ClusterRoleBinding for the Datadog
+# agent, the ClusterSecretStore CRD) that AmazonEKSAdminPolicy - which
+# mirrors k8s's built-in "admin" role and excludes RBAC/cluster-scoped
+# resources - can't read or write.
 resource "aws_eks_access_entry" "github_actions_deploy" {
   cluster_name  = module.eks.cluster_name
   principal_arn = aws_iam_role.github_actions_deploy.arn
@@ -91,7 +93,7 @@ resource "aws_eks_access_entry" "github_actions_deploy" {
 resource "aws_eks_access_policy_association" "github_actions_deploy" {
   cluster_name  = module.eks.cluster_name
   principal_arn = aws_iam_role.github_actions_deploy.arn
-  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSAdminPolicy"
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
 
   access_scope {
     type = "cluster"
