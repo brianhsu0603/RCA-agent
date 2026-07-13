@@ -47,7 +47,7 @@ def run_agent_loop(
             tools=tools,
             messages=messages,
         )
-
+        print(response.content, flush=True)
         messages.append({"role": "assistant", "content": response.content})
 
         tool_use_blocks = [b for b in response.content if b.type == "tool_use"]
@@ -63,12 +63,11 @@ def run_agent_loop(
             )
             continue
 
-        terminal_input = None
         tool_results = []
         for block in tool_use_blocks:
             if block.name == terminal_tool_name:
-                terminal_input = block.input
-                continue
+                logger.info("agent called terminal tool %s after %d iteration(s)", terminal_tool_name, iteration)
+                return block.input
             logger.info("tool call: %s(%s)", block.name, block.input)
             executor = tool_executors.get(block.name)
             if executor is None:
@@ -87,10 +86,6 @@ def run_agent_loop(
                     "content": json.dumps(result, default=str),
                 }
             )
-
-        if terminal_input is not None:
-            logger.info("agent called terminal tool %s after %d iteration(s)", terminal_tool_name, iteration)
-            return terminal_input
 
         messages.append({"role": "user", "content": tool_results})
 
